@@ -1,0 +1,22 @@
+{
+  "name": "http-chat-app-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabeeCoding/http-chat-app-test.git"
+  },
+  "author": "gabe",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/GabeeCoding/http-chat-app-test/issues"
+  },
+  "homepage": "https://github.com/GabeeCoding/http-chat-app-test#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
