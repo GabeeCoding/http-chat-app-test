@@ -73,6 +73,10 @@ app.get("/join/:channel", (req,resp) => {
     let cTable = getChannel(channel);
     //add a messages
     //add random join messages sometimes
+    //first, check if that user is aleady connected
+    if(cTable.users.find(u => u.name === username)){
+        resp.status(400).json({message: "Username taken, please choose another"}).end()
+    }
     cTable.users.push({
         name: username
     })
