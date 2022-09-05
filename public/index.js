@@ -1,5 +1,7 @@
 let connected = false
 let cache = null
+let usernameCached = null
+let channelCached = null
 
 const statusspan = document.getElementById("status")
 const msgList = document.getElementById("msgList")
@@ -56,10 +58,12 @@ function connect(){
     if(channel === null || channel === ""){
         connect();
     }
+    channelCached = channel
     let username = prompt("Enter username:");
     if(username === null || username === ""){
         connect();
     }
+    usernameCached = username
     let endpoint = `${origin}/join/${channel}?username=${username}`
     fetch(endpoint, {method: "POST"}).then((resp) => {
         resp.json().then((json) => {
@@ -93,4 +97,18 @@ function connect(){
     })
     //make the bot send a message instead of an alert?
 }
-//connect()
+
+function sendMessage(){
+    
+}
+
+function disconnect(){
+    //Cleans up everything
+    let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
+    fetch(endpoint, {method: "POST"}).then(resp => {
+        
+    }).catch(err => {
+        alert("Failed to disconnect from server: " + err)
+        console.log(err)
+    })
+}
