@@ -79,6 +79,7 @@ app.post("/join/:channel", (req,resp) => {
     //first, check if that user is aleady connected
     if(cTable.users.find(u => u.name === username)){
         resp.status(400).json({message: "Username taken, please choose another"}).end()
+        return
     }
     cTable.users.push({
         name: username
@@ -109,7 +110,13 @@ app.post("/leave/:channel", (req,resp) => {
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
     } else {
         resp.status(400).json({message: "Username does not exist"}).end()
+        return
     }
+    resp.status(200).end()
+});
+
+app.post("/sendMessage/:channel", (req,resp) => {
+
 })
 
 let PORT = process.env.PORT || 3000
