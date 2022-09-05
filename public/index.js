@@ -62,8 +62,10 @@ function connect(){
             }
         }).catch((err) => {
             alert("Failed to parse response from server: " + err)
+            console.log(err)
         })
     }).catch((err) => {
+        console.log(err)
         alert("Couldn't connect to server: " + err)
     })
     //make the bot send a message instead of an alert?
