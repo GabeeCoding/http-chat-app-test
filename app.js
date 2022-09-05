@@ -30,7 +30,7 @@ function getChannel(name){
         //create it
         channels.push({
             name: name,
-            users: {},
+            users: [],
             messages: [{content: `Welcome to the ${name} channel!`, timestamp: 0}]
         });
         return channels.find((c) => c.name === name);
@@ -73,11 +73,34 @@ app.get("/join/:channel", (req,resp) => {
     let cTable = getChannel(channel);
     //add a messages
     //add random join messages sometimes
+    cTable.users.push({
+        name: username
+    })
     sendMessage(cTable, `${username} joined the channel`);
     console.log(`${username} has joined the ${channel} channel`);
     resp.set("Content-Type", "application/json");
     //send back a table of the channel
-    resp.status(200).json(cTable).end()
+    //give the user back a uuid so they can use that for authenticating actions????
+    resp.status(200).json(cTable).end();
+});
+
+app.get("/leave/:channel", (req,resp) => {
+    let channel = req.params.channel
+    let username = req.query.username
+    if(!channel){
+        resp.status(400).json({message: "Missing channel paramater"});
+        return
+    }
+    if(!username){
+        resp.status(400).json({message: "Missing username query paramater"})
+        return
+    }
+    let cTable = getChannel(channel);
+    const index = cTable.users.indexOf(cTable.find((u) => u.name === username));
+    console.log(index)
+    if (index > -1) { // only splice array when item is found
+        cTable.users.splice(index, 1); // 2nd parameter means remove one item only
+    }  
 })
 
 let PORT = process.env.PORT || 3000
