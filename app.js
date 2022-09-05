@@ -97,10 +97,13 @@ app.get("/leave/:channel", (req,resp) => {
     }
     let cTable = getChannel(channel);
     const index = cTable.users.indexOf(cTable.users.find((u) => u.name === username));
-    console.log(index)
+
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
-    }  
+    } else {
+        resp.status(400).json({message: "Username does not exist"}).end()
+    }
+    console.log(cTable.users)
 })
 
 let PORT = process.env.PORT || 3000
