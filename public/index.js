@@ -14,6 +14,8 @@ function connect(){
         connect();
     }
     let username = prompt("Enter username:");
-    
+    if(username === null || username === ""){
+        connect();
+    }
 }
 connect()
