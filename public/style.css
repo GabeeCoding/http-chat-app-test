@@ -6,19 +6,30 @@
 }
 
 body {
-    background-color: grey;
+    background-color: rgb(203, 203, 203);
 }
 
 .sidebar {
     width: 20vw;
     background-color: black;
     height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
 }
 
 .sidebar * {
     color: white;
-    padding-top: 5%;
+    padding-top: 6.5%;
     font-family: "IBM Plex Mono";
     text-align: center;
     font-weight: 500;
+}
+.sidebar button {
+    padding: 0;
+    color: black;
+}
+
+.sidebar h1 {
+    flex: 0.4;
 }
