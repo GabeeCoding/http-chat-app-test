@@ -31,7 +31,7 @@ function getChannel(name){
         channels.push({
             name: name,
             users: [],
-            messages: [{content: `Welcome to the ${name} channel!`, timestamp: 0}]
+            messages: [],
         });
         return channels.find((c) => c.name === name);
     } else {
@@ -51,11 +51,12 @@ function getUser(name){
     }
 }
 
-function sendMessage(channel, content){
+function sendMessage(channel, content, from){
     channel.messages.push({
         content: content,
         timestamp: Date.now(),
-        id: lastMsgId + 1
+        id: lastMsgId + 1,
+        from: from,
     })
     lastMsgId += 1
 }
@@ -82,7 +83,7 @@ app.post("/join/:channel", (req,resp) => {
     cTable.users.push({
         name: username
     })
-    sendMessage(cTable, `${username} joined the channel`);
+    sendMessage(cTable, `${username} joined the channel`, "System");
     console.log(`${username} has joined the ${channel} channel`);
     resp.set("Content-Type", "application/json");
     //send back a table of the channel

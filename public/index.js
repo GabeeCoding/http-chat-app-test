@@ -31,6 +31,26 @@ function addMsgElement(name, content, timestamp, id){
     msgList.appendChild(li);
 }
 
+function loadMessagesFromCache(){
+    //loop over cache messages
+    console.log(cache)
+    cache.messages.forEach((message) => {
+        //check if message id is already in the page
+        let alreadyAdded = false
+        for(x of Array.from(msgList.children)){
+            if(x.id === message.id){
+                alreadyAdded = true;
+            }
+        }
+        if(alreadyAdded === false){
+            //not already added
+            //add element
+            console.log(message)
+            addMsgElement(message.from, message.content, message.timestamp, message.id)
+        }
+    })
+}
+
 function connect(){
     let channel = prompt("Enter channel name:");
     if(channel === null || channel === ""){
@@ -59,6 +79,9 @@ function connect(){
                 connected = true
                 cache = json
                 setStatus("connected")
+                addMsgElement("System", "Successfully joined channel " + cache.name, Date.now(), -1)
+                //load messages from cache
+                loadMessagesFromCache()
             }
         }).catch((err) => {
             alert("Failed to parse response from server: " + err)
