@@ -58,6 +58,7 @@ function connect(){
                 //store channel in cache
                 connected = true
                 cache = json
+                setStatus("connected")
             }
         }).catch((err) => {
             alert("Failed to parse response from server: " + err)
