@@ -7,7 +7,7 @@ app.use(express.static("public"));
 
 let channels = []
 let users = []
-
+let lastMsgId = 0;
 /*
     keep a log of channels, users, and messages within channels
     channel: {
@@ -55,10 +55,12 @@ function sendMessage(channel, content){
     channel.messages.push({
         content: content,
         timestamp: Date.now(),
+        id: lastMsgId + 1
     })
+    lastMsgId += 1
 }
 
-app.get("/join/:channel", (req,resp) => {
+app.post("/join/:channel", (req,resp) => {
     let channel = req.params.channel
     let username = req.query.username
     if(!channel){
@@ -88,7 +90,7 @@ app.get("/join/:channel", (req,resp) => {
     resp.status(200).json(cTable).end();
 });
 
-app.get("/leave/:channel", (req,resp) => {
+app.post("/leave/:channel", (req,resp) => {
     let channel = req.params.channel
     let username = req.query.username
     if(!channel){
@@ -107,7 +109,6 @@ app.get("/leave/:channel", (req,resp) => {
     } else {
         resp.status(400).json({message: "Username does not exist"}).end()
     }
-    console.log(cTable.users)
 })
 
 let PORT = process.env.PORT || 3000
