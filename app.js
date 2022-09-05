@@ -74,8 +74,10 @@ app.get("/join/:channel", (req,resp) => {
     //add a messages
     //add random join messages sometimes
     sendMessage(cTable, `${username} joined the channel`);
+    console.log(`${username} has joined the ${channel} channel`);
     resp.set("Content-Type", "application/json");
-    
+    //send back a table of the channel
+    resp.status(200).json(cTable).end()
 })
 
 let PORT = process.env.PORT || 3000
