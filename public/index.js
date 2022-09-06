@@ -41,7 +41,11 @@ function loadMessagesFromCache(){
         //check if message id is already in the page
         let alreadyAdded = false
         for(x of Array.from(msgList.children)){
-            if(x.id === message.id){
+            console.log(x.id, message.id)
+            if(message.from === "System"){
+                alreadyAdded = true
+            }
+            if(x.id == message.id){
                 alreadyAdded = true;
             }
         }
@@ -107,7 +111,7 @@ function sendMessage(){
     }
     //get content
     let content = msgBox.value
-    console.log(content)
+    msgBox.value = ""
     let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {
         method: "POST",
@@ -118,13 +122,46 @@ function sendMessage(){
     })
 }
 
+msgBox.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("sendMessageButton").click();
+    }
+})
+
 function disconnect(){
     //Cleans up everything
     let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {method: "POST"}).then(resp => {
-        
+        if(resp.status !== 200){
+            alert("Failed to disconnect")
+        } else {
+            //cleanup
+            connected = false
+            usernameCached = null
+            channelCached = null
+            cache = null
+            setStatus("not connected");
+            addMsgElement("System", "Successfully disconnected", Date.now(), -1);
+        }
     }).catch(err => {
         alert("Failed to disconnect from server: " + err)
         console.log(err)
     })
 }
+
+setInterval(()=>{
+    //get cache
+    if(connected){
+        let endpoint = `${origin}/cache/${channelCached}`
+        fetch(endpoint, {
+            method: "GET"
+        }).then((resp) => {
+            resp.json().then(json => {
+                cache = json
+                console.log("Updating cache")
+                loadMessagesFromCache();
+            })
+        })
+    }
+}, 3440)

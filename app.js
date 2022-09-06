@@ -105,7 +105,7 @@ app.post("/leave/:channel", (req,resp) => {
     }
     let cTable = getChannel(channel);
     const index = cTable.users.indexOf(cTable.users.find((u) => u.name === username));
-
+    
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
     } else {
