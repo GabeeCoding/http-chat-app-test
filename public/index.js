@@ -134,7 +134,9 @@ function disconnect(){
     let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {method: "POST"}).then(resp => {
         if(resp.status !== 200){
-            alert("Failed to disconnect")
+            resp.json().then((json) => {
+                alert("Failed to disconnect: " + json.message)
+            });
         } else {
             //cleanup
             connected = false
