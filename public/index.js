@@ -156,6 +156,12 @@ msgBox.addEventListener("keypress", (event) => {
 
 function disconnect(){
     //Cleans up everything
+    if(connected === false){
+        //if we are not connected
+        //fail to disconnect
+        alert("Not connected");
+        return
+    }
     let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {method: "POST"}).then(resp => {
         if(resp.status !== 200){
