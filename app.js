@@ -116,7 +116,26 @@ app.post("/leave/:channel", (req,resp) => {
 });
 
 app.post("/sendMessage/:channel", (req,resp) => {
-
+    let channel = req.params.channel
+    let username = req.query.username
+    let content = req.body
+    if(req.headers["content-type"] !== "application/json"){
+        resp.status(400).json({message: "Invalid content-type, expected application/json!"}).end();
+        return
+    }
+    if(!channel){
+        resp.status(400).json({message: "Missing channel paramater"});
+        return
+    }
+    if(!username){
+        resp.status(400).json({message: "Missing username query paramater"})
+        return
+    }
+    //sending a message
+    //add it to the cTable
+    let cTable = getChannel(channel);
+    //sendMessage(cTable)
+    resp.json({message: "hi"})
 })
 
 let PORT = process.env.PORT || 3000
