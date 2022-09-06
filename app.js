@@ -72,6 +72,10 @@ app.post("/join/:channel", (req,resp) => {
         resp.status(400).json({message: "Missing username query paramater"})
         return
     }
+    if(username.toLowerCase() === "system"){
+        resp.status(400).json({message: '"System" is a reserved username'}).end()
+        return
+    }
     //get the channel
     let cTable = getChannel(channel);
     //add a messages
