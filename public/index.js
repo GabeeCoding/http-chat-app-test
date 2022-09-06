@@ -40,6 +40,10 @@ function addMsgElement(name, content, timestamp, id){
     msgList.appendChild(li);
 }
 
+function sendSystemMessage(message){
+    addMsgElement("System", message, Date.now(), -1)
+}
+
 function loadMessagesFromCache(){
     //loop over cache messages
     console.log(cache)
@@ -110,7 +114,7 @@ function connect(){
                 connected = true
                 cache = json
                 setStatus("connected")
-                addMsgElement("System", "Successfully joined channel " + cache.name, Date.now(), -1)
+                sendSystemMessage("Successfully joined channel " + cache.name);
                 //load messages from cache
                 loadMessagesFromCache()
             }
@@ -125,26 +129,87 @@ function connect(){
     //make the bot send a message instead of an alert?
 }
 
-function sendMessage(){
-    //check if connected
-    if(connected === false){
-        alert("Not connected");
-        return
+const commands = [
+    {
+        name: "/join",
+        aliases: ["connect", "newConnection"],
+        run: () => {
+            connect();
+        }
+    },
+    {
+        name: "/leave",
+        aliases: ["disconnect", "close", "closeConnection", "bye"],
+        run: () => {
+            disconnect();
+        }
+    },
+    {
+        name: "/channels",
+        aliases: ["list"],
+        run: () => {
+            //send a request to the server
+            let endpoint = `${origin}/channels`
+            fetch(endpoint, {
+                method: "GET"
+            }).then(resp => {
+                resp.json().then(json => {
+                    //got the json
+                    let names = []
+                    for(x of json){
+                        //for every channel
+                        names.push(x.name)
+                    }
+                    sendSystemMessage(`Channel list: ${names.join(", ")}`)
+                })
+            })
+        }
     }
+]
+
+function sendMessage(){
     //get content
     let content = msgBox.value
     if(content === ""){
         return
     }
-    msgBox.value = ""
-    let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
-    fetch(endpoint, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({message: content}),
-    })
+    //check if its a command
+    let command = null
+    for(let x of commands){
+        if(content === x.name){
+            command = x
+        } else {
+            for(alias in x.aliases){
+                if(content === `/${alias}`){
+                    command = x
+                }
+            }
+        }
+    }
+    console.log(command, content)
+    if(command !== null){
+        //if such command exists
+        //run it
+        command.run()
+    } else {
+        //check if connected
+        if(connected === false){
+            alert("Not connected");
+            return
+        }
+        msgBox.value = ""
+        let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
+        fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({message: content}),
+        }).catch((err) => {
+            sendSystemMessage("Failed to send message")
+            console.log(err)
+        })
+    }
 }
 
 msgBox.addEventListener("keypress", (event) => {
@@ -175,7 +240,7 @@ function disconnect(){
             channelCached = null
             cache = null
             setStatus("not connected");
-            addMsgElement("System", "Successfully disconnected", Date.now(), -1);
+            sendSystemMessage("Successfully disconnected");
         }
     }).catch(err => {
         alert("Failed to disconnect from server: " + err)

@@ -6,7 +6,6 @@ app.use(express.json());
 app.use(express.static("public"));
 
 let channels = []
-let users = []
 let lastMsgId = 0;
 /*
     keep a log of channels, users, and messages within channels
@@ -15,9 +14,6 @@ let lastMsgId = 0;
         users: user[];
         messages: message[]
     }
-    user: {
-        name: string;
-    }
     message: {
         timestamp: int;
         content: string
@@ -25,7 +21,7 @@ let lastMsgId = 0;
 */
 
 function getChannel(name){
-    let channel = channels[name]
+    let channel = channels.find(c => c.name === name)
     if(!channel){
         //create it
         channels.push({
@@ -36,18 +32,6 @@ function getChannel(name){
         return channels.find((c) => c.name === name);
     } else {
         return channel
-    }
-}
-
-function getUser(name){
-    let user = users[name]
-    if(!user){
-        users.push({
-            name: name,
-            // Channel connected??????
-        })
-    } else {
-        return user
     }
 }
 
@@ -122,7 +106,6 @@ app.post("/leave/:channel", (req,resp) => {
 app.post("/sendMessage/:channel", (req,resp) => {
     let channel = req.params.channel
     let username = req.query.username
-    let content = req.body
     if(req.headers["content-type"] !== "application/json"){
         resp.status(400).json({message: "Invalid content-type, expected application/json!"}).end();
         return
@@ -150,6 +133,10 @@ app.get("/cache/:channel", (req, resp) => {
     }
     let cTable = getChannel(channel);
     resp.json(cTable).end();
+})
+
+app.get("/channels", (req, resp) => {
+    resp.json(channels).end();
 })
 
 let PORT = process.env.PORT || 3000
