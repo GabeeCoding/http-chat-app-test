@@ -4,6 +4,7 @@ let usernameCached = null
 let channelCached = null
 
 const statusspan = document.getElementById("status")
+const requestStatus = document.getElementById("requestStatus")
 const msgList = document.getElementById("msgList")
 const msgBox = document.getElementById("msgbox");
 const ScreenElement = document.getElementById("screen")
@@ -12,6 +13,10 @@ const origin = `${window.location.origin}`
 
 function setStatus(status){
     statusspan.innerHTML = status
+}
+
+function setConnectionStatus(status){
+    requestStatus.innerHTML = status
 }
 
 function addMsgElement(name, content, timestamp, id){
@@ -124,6 +129,9 @@ function sendMessage(){
     }
     //get content
     let content = msgBox.value
+    if(content === ""){
+        return
+    }
     msgBox.value = ""
     let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {
