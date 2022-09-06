@@ -6,6 +6,7 @@ let channelCached = null
 const statusspan = document.getElementById("status")
 const msgList = document.getElementById("msgList")
 const msgBox = document.getElementById("msgbox");
+const ScreenElement = document.getElementById("screen")
 
 const origin = `${window.location.origin}`
 
@@ -51,11 +52,20 @@ function loadMessagesFromCache(){
         }
         if(alreadyAdded === false){
             //not already added
+            //its a new element
             //add element
             console.log(message)
             addMsgElement(message.from, message.content, message.timestamp, message.id)
         }
-    })
+    });
+    console.log("------------------------")
+    //get the highest id
+    //or most recent element
+    let mostRecentElement = null
+    for(x of Array.from(msgList.children)){
+        mostRecentElement = x
+    }
+    ScreenElement.scrollTop = mostRecentElement.offsetTop
 }
 
 function connect(){
