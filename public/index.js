@@ -74,6 +74,10 @@ function loadMessagesFromCache(){
 }
 
 function connect(){
+    if(connected){
+        alert("To connect to a new channel, disconnect first")
+        return
+    }
     let channel = prompt("Enter channel name (not case sensitive):");
     if(channel === null || channel === ""){
         //connect();
