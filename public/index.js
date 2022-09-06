@@ -59,14 +59,17 @@ function loadMessagesFromCache(){
 }
 
 function connect(){
-    let channel = prompt("Enter channel name:");
+    let channel = prompt("Enter channel name (not case sensitive):");
     if(channel === null || channel === ""){
-        connect();
+        //connect();
+        return
     }
     channelCached = channel
+    channelCached = channelCached.toLowerCase()
     let username = prompt("Enter username:");
     if(username === null || username === ""){
-        connect();
+        //connect();
+        return
     }
     usernameCached = username
     let endpoint = `${origin}/join/${channel}?username=${username}`
