@@ -144,7 +144,8 @@ app.get("/cache/:channel", (req, resp) => {
         resp.status(400).json({message: "Missing channel paramater"});
         return
     }
-    
+    let cTable = getChannel(channel);
+    resp.json(cTable).end();
 })
 
 let PORT = process.env.PORT || 3000
