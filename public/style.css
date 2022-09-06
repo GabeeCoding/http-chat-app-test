@@ -15,7 +15,7 @@ body {
 .sidebar {
     width: 20vw;
     background-color: black;
-    height: 100vh;
+    height: 110vh;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
