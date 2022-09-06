@@ -5,6 +5,7 @@ let channelCached = null
 
 const statusspan = document.getElementById("status")
 const msgList = document.getElementById("msgList")
+const msgBox = document.getElementById("msgbox");
 
 const origin = `${window.location.origin}`
 
@@ -99,7 +100,22 @@ function connect(){
 }
 
 function sendMessage(){
-    
+    //check if connected
+    if(connected === false){
+        alert("Not connected");
+        return
+    }
+    //get content
+    let content = msgBox.value
+    console.log(content)
+    let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
+    fetch(endpoint, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({message: content}),
+    })
 }
 
 function disconnect(){

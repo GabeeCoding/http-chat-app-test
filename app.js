@@ -134,8 +134,17 @@ app.post("/sendMessage/:channel", (req,resp) => {
     //sending a message
     //add it to the cTable
     let cTable = getChannel(channel);
-    //sendMessage(cTable)
-    resp.json({message: "hi"})
+    sendMessage(cTable, req.body.message, username);
+    resp.status(200).end()
+});
+
+app.get("/cache/:channel", (req, resp) => {
+    let channel = req.params.channel
+    if(!channel){
+        resp.status(400).json({message: "Missing channel paramater"});
+        return
+    }
+    
 })
 
 let PORT = process.env.PORT || 3000
