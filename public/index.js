@@ -33,6 +33,9 @@ function addMsgElement(name, content, timestamp, id){
     li.appendChild(messageP)
 
     messageP.innerHTML = content
+    for(x of Array.from(messageP.children)){
+        x.className = "nopadding"
+    }
     nameSpan.innerHTML = name
     let date = new Date(timestamp)
     dateSpan.innerHTML = date.toLocaleString()
