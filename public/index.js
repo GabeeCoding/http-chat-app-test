@@ -120,7 +120,7 @@ function connect(){
         resp.json().then((json) => {
             //recieve the response
             //store in cache
-            if(resp.status !== 200){
+            if(!resp.ok){
                 //something went wrong, check message in json
                 if(json.message){
                     //there is a message
@@ -267,7 +267,7 @@ function disconnect(){
     }
     let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
     fetch(endpoint, {method: "POST"}).then(resp => {
-        if(resp.status !== 200){
+        if(!resp.ok){
             resp.json().then((json) => {
                 alert("Failed to disconnect: " + json.message)
             });
@@ -291,14 +291,19 @@ setInterval(()=>{
     if(connected){
         if(document.hasFocus()){
             let endpoint = `${origin}/cache/${channelCached}`
+            let now = new Date();
             fetch(endpoint, {
                 method: "GET"
             }).then((resp) => {
                 resp.json().then(json => {
+                    setConnectionStatus(`recieved cache (${new Date() - now}ms)`);
                     cache = json
-                    console.log("Updating cache")
                     loadMessagesFromCache();
                 })
+            }).catch((err) => {
+                sendSystemMessage("Lost connection to server")
+                setConnectionStatus(`failed to get cache (lost connection!) [${new Date() - now}ms]`)
+                console.log(err)
             })
         }
     }
