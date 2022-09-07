@@ -41,6 +41,7 @@ function addMsgElement(name, content, timestamp, id){
     dateSpan.innerHTML = date.toLocaleString()
     li.id = id.toString()
     msgList.appendChild(li);
+    ScreenElement.scrollTop = li.offsetTop;
 }
 
 function sendSystemMessage(message){
