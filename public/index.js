@@ -11,6 +11,8 @@ const ScreenElement = document.getElementById("screen")
 
 const origin = `${window.location.origin}`
 
+const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P"]
+
 function setStatus(status){
     statusspan.innerHTML = status
 }
@@ -33,9 +35,23 @@ function addMsgElement(name, content, timestamp, id){
     li.appendChild(messageP)
 
     messageP.innerHTML = content
-    for(x of Array.from(messageP.children)){
-        x.className = "nopadding"
+    function checkForXSS(element){
+        for(x of Array.from(element.children)){
+            //for every child
+            x.className = "nopadding"
+            //check if the element is not allowed
+            //find an element where the element matches something from the allowed list
+            let allowed = allowedElements.find(element => element === x.tagName)
+            if(allowed === undefined){
+                //is not allowed
+                //remove it
+                element.removeChild(x);
+            } else {
+                checkForXSS(x);
+            }
+        }
     }
+    checkForXSS(messageP);
     nameSpan.innerHTML = name
     let date = new Date(timestamp)
     dateSpan.innerHTML = date.toLocaleString()
