@@ -80,6 +80,10 @@ body {
     font-weight: bold;
 }
 
+.nopadding {
+    padding: 0;
+}
+
 .username {
     padding-left: 0;
 }
