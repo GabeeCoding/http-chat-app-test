@@ -97,24 +97,37 @@ function loadMessagesFromCache(){
     ScreenElement.scrollTop = mostRecentElement.offsetTop
 }
 
-function connect(){
+function connect(cParam, uParam){
     if(connected){
         alert("To connect to a new channel, disconnect first")
         return
     }
-    let channel = prompt("Enter channel name (not case sensitive):");
-    if(channel === null || channel === ""){
-        //connect();
-        return
+    let channel, username
+    if(cParam){
+        channelCached = cParam.toLowerCase()
+        channel = cParam.toLowerCase()
+    } else {
+        let result = prompt("Enter channel name (not case sensitive):");
+        if(result === null || result === ""){
+            //connect();
+            return
+        }
+        channelCached = result
+        channelCached = channelCached.toLowerCase()
+        channel = result.toLowerCase()
     }
-    channelCached = channel
-    channelCached = channelCached.toLowerCase()
-    let username = prompt("Enter username:");
-    if(username === null || username === ""){
-        //connect();
-        return
+    if(uParam){
+        usernameCached = uParam
+        username = uParam
+    } else {
+        let result = prompt("Enter username:");
+        if(result === null || result === ""){
+            //connect();
+            return
+        }
+        usernameCached = result
+        username = result
     }
-    usernameCached = username
     let endpoint = `${origin}/join/${channel}?username=${username}`
     fetch(endpoint, {method: "POST"}).then((resp) => {
         resp.json().then((json) => {
@@ -299,6 +312,23 @@ setInterval(()=>{
                     setConnectionStatus(`recieved cache (${new Date() - now}ms)`);
                     cache = json
                     loadMessagesFromCache();
+                    //check if user is in cache table
+                    //if we are connected
+                    let users = cache.users
+                    //users is an array
+                    if(users.find(user => user.name === usernameCached) === undefined){
+                        //if the user no longer exists in the server table
+                        //clear all the client variables
+                        let channel = channelCached
+                        let name = usernameCached
+                        connected = false
+                        usernameCached = null
+                        channelCached = null
+                        cache = null
+                        setStatus("disconnected")
+                        sendSystemMessage(`The server has restarted! Opening new connection as ${name}...`)
+                        connect(channel, name)
+                    }
                 })
             }).catch((err) => {
                 sendSystemMessage("Lost connection to server")
