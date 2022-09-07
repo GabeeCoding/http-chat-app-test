@@ -148,6 +148,7 @@ const commands = [
     },
     {
         name: "/channels",
+        description: "Show all channels",
         aliases: ["list"],
         run: () => {
             //send a request to the server
@@ -162,9 +163,24 @@ const commands = [
                         //for every channel
                         names.push(x.name)
                     }
+                    if(names.length === 0){
+                        names.push("No channels");
+                    }
                     sendSystemMessage(`Channel list: ${names.join(", ")}`)
                 })
             })
+        }
+    },
+    {
+        name: "/cmds",
+        description: "Shows a list of all commands",
+        aliases: ["commands", "help"],
+        run: () => {
+            let cmds = []
+            commands.forEach((command) => {
+                cmds.push(command.name)
+            })
+            sendSystemMessage(cmds.join(" "));
         }
     }
 ]
@@ -181,7 +197,7 @@ function sendMessage(){
         if(content === x.name){
             command = x
         } else {
-            for(alias in x.aliases){
+            for(alias of x.aliases){
                 if(content === `/${alias}`){
                     command = x
                 }
