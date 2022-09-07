@@ -273,15 +273,17 @@ function disconnect(){
 setInterval(()=>{
     //get cache
     if(connected){
-        let endpoint = `${origin}/cache/${channelCached}`
-        fetch(endpoint, {
-            method: "GET"
-        }).then((resp) => {
-            resp.json().then(json => {
-                cache = json
-                console.log("Updating cache")
-                loadMessagesFromCache();
+        if(document.hasFocus()){
+            let endpoint = `${origin}/cache/${channelCached}`
+            fetch(endpoint, {
+                method: "GET"
+            }).then((resp) => {
+                resp.json().then(json => {
+                    cache = json
+                    console.log("Updating cache")
+                    loadMessagesFromCache();
+                })
             })
-        })
+        }
     }
 }, 5000)
