@@ -133,12 +133,14 @@ const commands = [
     {
         name: "/join",
         aliases: ["connect", "newConnection"],
+        description: "Join a channel",
         run: () => {
             connect();
         }
     },
     {
         name: "/leave",
+        description: "Leave the current channel",
         aliases: ["disconnect", "close", "closeConnection", "bye"],
         run: () => {
             disconnect();
@@ -186,11 +188,11 @@ function sendMessage(){
             }
         }
     }
-    console.log(command, content)
     if(command !== null){
         //if such command exists
         //run it
-        command.run()
+        command.run();
+        msgBox.value = ""
     } else {
         //check if connected
         if(connected === false){
