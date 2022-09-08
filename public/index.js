@@ -319,6 +319,8 @@ setInterval(()=>{
                     if(users.find(user => user.name === usernameCached) === undefined){
                         //if the user no longer exists in the server table
                         //clear all the client variables
+                        //first check if we are connected to avoid connecting as null
+                        console.log(connected, usernameCached, channelCached, cache)
                         let channel = channelCached
                         let name = usernameCached
                         connected = false
