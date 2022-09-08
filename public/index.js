@@ -339,6 +339,10 @@ setInterval(()=>{
                         //clear all the client variables
                         //first check if we are connected to avoid connecting as null
                         console.log(connected, usernameCached, channelCached, cache)
+                        if(connected === false){
+                            //if we are no longer connected somehow
+                            return
+                        }
                         let channel = channelCached
                         let name = usernameCached
                         connected = false
