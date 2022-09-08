@@ -96,6 +96,11 @@ app.post("/leave/:channel", (req,resp) => {
     
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
+        if(cTable.users.length === 0){
+            //if there are no users
+            let index = channels.indexOf(cTable)
+            channels.splice(index, 1)
+        }
     } else {
         resp.status(400).json({message: "Username does not exist"}).end()
         return
