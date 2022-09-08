@@ -147,7 +147,7 @@ function connect(cParam, uParam){
                 connected = true
                 cache = json
                 setStatus("connected")
-                sendSystemMessage("Successfully joined channel " + cache.name);
+                sendSystemMessage(`Successfully joined channel ${cache.name} (${cache.users.length} connected)`);
                 //load messages from cache
                 loadMessagesFromCache()
             }
