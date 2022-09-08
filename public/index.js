@@ -327,6 +327,9 @@ setInterval(()=>{
                         cache = null
                         setStatus("disconnected")
                         sendSystemMessage(`The server has restarted! Opening new connection as ${name}...`)
+                        for(x of Array.from(msgList.children)){
+                            x.id = "-1"
+                        }
                         connect(channel, name)
                     }
                 })
