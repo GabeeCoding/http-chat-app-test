@@ -194,7 +194,7 @@ const commands = [
                     let names = []
                     for(x of json){
                         //for every channel
-                        names.push(x.name)
+                        names.push(`${x.name} (${x.users.length} connected)`)
                     }
                     if(names.length === 0){
                         names.push("No channels");
