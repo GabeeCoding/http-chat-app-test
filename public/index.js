@@ -226,7 +226,7 @@ const commands = [
         run: () => {
             if(connected){
                 let tbl = []
-                tbl.forEach(user => tbl.push(user.name))
+                cache.users.forEach(user => tbl.push(user.name))
                 sendSystemMessage(`${cache.users.length} users connected: ${tbl.join(", ")}`);
             } else {
                 sendSystemMessage("Can't run this command when not connected")
