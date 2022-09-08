@@ -11,7 +11,7 @@ const ScreenElement = document.getElementById("screen")
 
 const origin = `${window.location.origin}`
 
-const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P"]
+const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A"]
 
 function setStatus(status){
     statusspan.innerHTML = status
