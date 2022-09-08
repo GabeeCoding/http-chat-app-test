@@ -218,7 +218,20 @@ const commands = [
             })
             sendSystemMessage(cmds.join(" "));
         }
-    }
+    },
+    {
+        name: "/membercount",
+        aliases: ["getmembercount", "count", "members", "getcount"],
+        description: "Get users in the channel",
+        run: () => {
+            if(connected){
+                sendSystemMessage(`${cache.users.length} users connected: ${cache.users.join(", ")}`);
+            } else {
+                sendSystemMessage("Can't run this command when not connected")
+                return
+            }
+        }
+    },
 ]
 
 function sendMessage(){
