@@ -7,3 +7,8 @@
 ![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/GabeeCoding/http-chat-app-test)
 
 # Web Chat
+Hello GitHub user! This is a chat app inspired by IRC which took me 4 days to make.
+
+If you want to contribute to this repo, send a PR and I will review it. The repo is Unlicensed, so feel free to take some code or something
+
+Enjoy :)
