@@ -201,6 +201,9 @@ const commands = [
                     }
                     sendSystemMessage(`Channel list: ${names.join(", ")}`)
                 })
+            }).catch(err => {
+                sendSystemMessage("Failed to get channel list")
+                console.log(err)
             })
         }
     },
