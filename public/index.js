@@ -225,7 +225,9 @@ const commands = [
         description: "Get users in the channel",
         run: () => {
             if(connected){
-                sendSystemMessage(`${cache.users.length} users connected: ${cache.users.join(", ")}`);
+                let tbl = []
+                tbl.forEach(user => tbl.push(user.name))
+                sendSystemMessage(`${cache.users.length} users connected: ${tbl.join(", ")}`);
             } else {
                 sendSystemMessage("Can't run this command when not connected")
                 return
