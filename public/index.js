@@ -214,9 +214,13 @@ const commands = [
         run: () => {
             let cmds = []
             commands.forEach((command) => {
-                cmds.push(command.name)
+                let aliasestbl = []
+                for(x of command.aliases){
+                    aliasestbl.push(`/${x}`)
+                }
+                cmds.push(`${command.name} [${aliasestbl.join(", ")}]`)
             })
-            sendSystemMessage(cmds.join(" "));
+            sendSystemMessage(cmds.join(", "));
         }
     },
     {
