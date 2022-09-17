@@ -91,3 +91,11 @@ body {
 .messagecontent {
     padding-top: 0
 }
+  
+#titlelink:hover span {
+    display: none
+}
+
+#titlelink:hover:before {
+    content: "Drag to your bookmarks"
+}
