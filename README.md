@@ -25,14 +25,12 @@ Requires: node, npm
 
 1. Update dependencies
 
-
-    npm i
-   
-
+        npm i
+    
 2. Run the server script (defaults to port 3000)
 
     
-    node app
+        node app
     
     
 To change the port that the server listens on, change the PORT environment variable.
