@@ -7,18 +7,6 @@ app.use(express.static("public"));
 
 let channels = []
 let lastMsgId = 0;
-/*
-    keep a log of channels, users, and messages within channels
-    channel: {
-        name: string;
-        users: user[];
-        messages: message[]
-    }
-    message: {
-        timestamp: int;
-        content: string
-    }
-*/
 
 function getChannel(name){
     let channel = channels.find(c => c.name === name)
