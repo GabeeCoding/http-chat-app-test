@@ -2,6 +2,12 @@ const express = require("express")
 
 const app = express();
 
+require("dotenv").config()
+
+const cliConfig = {
+    CACHE_REQ_INTERVAL: process.env.CACHE_REQ_INTERVAL || "4500",
+}
+
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -46,6 +52,12 @@ app.post("/join/:channel", (req,resp) => {
     }
     if(username.toLowerCase() === "system"){
         resp.status(400).json({message: '"System" is a reserved username'}).end()
+        return
+    }
+    if(username.includes("<") || username.includes(">")){
+        resp.status(400)
+        .json({message: "Username cannot contain > or <"})
+        .end();
         return
     }
     //get the channel
@@ -125,14 +137,14 @@ app.get("/cache/:channel", (req, resp) => {
         return
     }
     let cTable = getChannel(channel);
-    resp.json(cTable).end();
+    resp.json({cTable: cTable, config: cliConfig}).end();
 })
 
 app.get("/channels", (req, resp) => {
     resp.json(channels).end();
 })
 
-let PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT} (http://localhost:${PORT})`)
 })
