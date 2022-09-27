@@ -9,7 +9,7 @@ const msgList = document.getElementById("msgList")
 const msgBox = document.getElementById("msgbox");
 const ScreenElement = document.getElementById("screen")
 
-const origin = `${window.location.origin}`
+const origin = window.location.origin
 
 const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A"]
 
@@ -373,6 +373,8 @@ let cliConfig = {
 				setConnectionStatus(`failed to get cache (lost connection!) [${new Date() - now}ms]`)
 				console.log(err)
 			})
+		} else {
+			setConnectionStatus("connected, focus lost");
 		}
 	}
 		loop();
