@@ -13,6 +13,8 @@ const origin = window.location.origin
 
 const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A"]
 
+let reqCount = 0
+
 function setStatus(status){
 	statusspan.innerHTML = status
 }
@@ -130,6 +132,7 @@ function connect(cParam, uParam){
 	}
 	let endpoint = `${origin}/join/${channel}?username=${username}`
 	fetch(endpoint, {method: "POST"}).then((resp) => {
+		reqCount += 1
 		resp.json().then((json) => {
 			//recieve the response
 			//store in cache
@@ -189,6 +192,7 @@ const commands = [
 			fetch(endpoint, {
 				method: "GET"
 			}).then(resp => {
+				reqCount += 1
 				resp.json().then(json => {
 					//got the json
 					let names = []
@@ -281,6 +285,8 @@ function sendMessage(){
 		}).catch((err) => {
 			sendSystemMessage("Failed to send message")
 			console.log(err)
+		}).then(() => {
+			reqCount += 1;
 		})
 	}
 }
@@ -302,6 +308,7 @@ function disconnect(){
 	}
 	let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
 	fetch(endpoint, {method: "POST"}).then(resp => {
+		reqCount += 1;
 		if(!resp.ok){
 			resp.json().then((json) => {
 				alert("Failed to disconnect: " + json.message)
@@ -335,8 +342,9 @@ let cliConfig = {
 			fetch(endpoint, {
 				method: "GET"
 			}).then((resp) => {
+				reqCount += 1;
 				resp.json().then(json => {
-					setConnectionStatus(`recieved cache (${new Date() - now}ms)`);
+					setConnectionStatus(`recieved cache (${new Date() - now}ms) (${reqCount} total requests)`);
 					cache = json.cTable
 					loadMessagesFromCache();
 					//load config
