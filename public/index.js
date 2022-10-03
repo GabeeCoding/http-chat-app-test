@@ -131,6 +131,7 @@ function connect(cParam, uParam){
 		username = result
 	}
 	let endpoint = `${origin}/join/${channel}?username=${username}`
+	sendSystemMessage(`Opening connection to ${channel}...`)
 	fetch(endpoint, {method: "POST"}).then((resp) => {
 		reqCount += 1
 		resp.json().then((json) => {
