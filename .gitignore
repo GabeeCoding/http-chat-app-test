@@ -1,5 +1,6 @@
 node_modules/
 .env
+.gitpod.yml
 
 # start scripts
 start.sh
