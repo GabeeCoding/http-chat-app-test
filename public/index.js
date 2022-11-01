@@ -338,7 +338,7 @@ let cliConfig = {
 	   // Your logic here
 	   if(connected){
 		if(document.hasFocus()){
-			let endpoint = `${origin}/cache/${channelCached}`
+			let endpoint = `${origin}/cache/${channelCached}?username=${usernameCached}`
 			let now = new Date();
 			fetch(endpoint, {
 				method: "GET"
