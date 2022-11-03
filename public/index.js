@@ -11,7 +11,7 @@ const ScreenElement = document.getElementById("screen")
 
 const origin = window.location.origin
 
-const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A"]
+const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A", "VIDEO", "AUDIO"]
 
 let reqCount = 0
 
