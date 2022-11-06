@@ -4,10 +4,10 @@ const app = express();
 
 require("dotenv").config()
 
+const TIMEOUTDELAY = process.env.TIMEOUTDELAY || 10000
 const cliConfig = {
     CACHE_REQ_INTERVAL: process.env.CACHE_REQ_INTERVAL || "4500",
 }
-const TIMEOUTDELAY = process.env.TIMEOUTDELAY || 10000
 
 app.use(express.json());
 app.use(express.static("public"));
