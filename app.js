@@ -4,6 +4,7 @@ const app = express();
 
 require("dotenv").config()
 
+const TIMEOUTDELAY = process.env.TIMEOUTDELAY || 10000
 const cliConfig = {
     CACHE_REQ_INTERVAL: process.env.CACHE_REQ_INTERVAL || "4500",
 }
@@ -65,12 +66,23 @@ app.post("/join/:channel", (req,resp) => {
     //add a messages
     //add random join messages sometimes
     //first, check if that user is aleady connected
-    if(cTable.users.find(u => u.name === username)){
+    //check if any one is timed out and kick them first though
+    //sometimes there may be afk users
+    let sameUser = cTable.users.find(u => u.name === username)
+    if(sameUser && ((Date.now() - sameUser.lastRequest) >= TIMEOUTDELAY)){
+        //kick them
+        cTable.users.splice(cTable.users.indexOf(sameUser), 1)
+        //removed
+        //continue
+        //problem is when we kick the user it acts like the old ???
+        //probably do lastRequest on the client and add that to cliConfig
+    } else if(sameUser) {
         resp.status(400).json({message: "Username taken, please choose another"}).end()
         return
     }
     cTable.users.push({
-        name: username
+        name: username,
+        lastRequest: Date.now(),
     })
     sendMessage(cTable, `${username} joined the channel`, "System");
     console.log(`${username} has joined the ${channel} channel`);
@@ -126,17 +138,20 @@ app.post("/sendMessage/:channel", (req,resp) => {
     //sending a message
     //add it to the cTable
     let cTable = getChannel(channel);
+    cTable.users.find(u => u.name === username).lastRequest = Date.now()
     sendMessage(cTable, req.body.message, username);
     resp.status(200).end()
 });
 
 app.get("/cache/:channel", (req, resp) => {
     let channel = req.params.channel
+    let username = req.query.username
     if(!channel){
         resp.status(400).json({message: "Missing channel paramater"});
         return
     }
     let cTable = getChannel(channel);
+    cTable.users.find(u => u.name === username).lastRequest = Date.now()
     resp.json({cTable: cTable, config: cliConfig}).end();
 })
 
