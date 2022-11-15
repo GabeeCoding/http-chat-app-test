@@ -9,7 +9,10 @@ const msgList = document.getElementById("msgList")
 const msgBox = document.getElementById("msgbox");
 const ScreenElement = document.getElementById("screen")
 
-const origin = window.location.origin
+let origin = window.location.origin + window.location.pathname
+if(origin.endsWith("/")){
+	origin = origin.slice(0, -1)
+}
 
 const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A", "VIDEO", "AUDIO", "SOURCE"]
 
@@ -132,7 +135,7 @@ function connect(cParam, uParam){
 	}
 	let endpoint = `${origin}/join/${channel}?username=${username}`
 	sendSystemMessage(`Opening connection to ${channel}...`)
-	fetch(endpoint, {method: "POST"}).then((resp) => {
+	fetch(endpoint, {method: "POST", headers: {username: username}}).then((resp) => {
 		reqCount += 1
 		resp.json().then((json) => {
 			//recieve the response
@@ -276,11 +279,12 @@ function sendMessage(){
 			return
 		}
 		msgBox.value = ""
-		let endpoint = `${origin}/sendMessage/${channelCached}?username=${usernameCached}`
+		let endpoint = `${origin}/sendMessage/${channelCached}`
 		fetch(endpoint, {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				"username": usernameCached
 			},
 			body: JSON.stringify({message: content}),
 		}).catch((err) => {
@@ -308,7 +312,7 @@ function disconnect(){
 		return
 	}
 	let endpoint = `${origin}/leave/${channelCached}?username=${usernameCached}`
-	fetch(endpoint, {method: "POST"}).then(resp => {
+	fetch(endpoint, {method: "POST", headers: {"username": usernameCached}}).then(resp => {
 		reqCount += 1;
 		if(!resp.ok){
 			resp.json().then((json) => {
@@ -341,7 +345,10 @@ let cliConfig = {
 			let endpoint = `${origin}/cache/${channelCached}?username=${usernameCached}`
 			let now = new Date();
 			fetch(endpoint, {
-				method: "GET"
+				method: "GET",
+				headers: {
+					username: usernameCached
+				}
 			}).then((resp) => {
 				reqCount += 1;
 				resp.json().then(json => {
