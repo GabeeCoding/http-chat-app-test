@@ -42,7 +42,7 @@ function sendMessage(channel, content, from){
 
 app.post("/join/:channel", (req,resp) => {
     let channel = req.params.channel
-    let username = req.query.username
+    let username = req.headers.username
     if(!channel){
         resp.status(400).json({message: "Missing channel paramater"});
         return
@@ -94,7 +94,7 @@ app.post("/join/:channel", (req,resp) => {
 
 app.post("/leave/:channel", (req,resp) => {
     let channel = req.params.channel
-    let username = req.query.username
+    let username = req.headers.username
     if(!channel){
         resp.status(400).json({message: "Missing channel paramater"});
         return
@@ -122,8 +122,8 @@ app.post("/leave/:channel", (req,resp) => {
 
 app.post("/sendMessage/:channel", (req,resp) => {
     let channel = req.params.channel
-    let username = req.query.username
-    if(req.headers["content-type"] !== "application/json"){
+    let username = req.headers.username
+	if(req.headers["content-type"] !== "application/json"){
         resp.status(400).json({message: "Invalid content-type, expected application/json!"}).end();
         return
     }
@@ -138,21 +138,23 @@ app.post("/sendMessage/:channel", (req,resp) => {
     //sending a message
     //add it to the cTable
     let cTable = getChannel(channel);
-    cTable.users.find(u => u.name === username).lastRequest = Date.now()
-    sendMessage(cTable, req.body.message, username);
-    resp.status(200).end()
+	cTable.users.find(u => u.name === username).lastRequest = Date.now()
+	sendMessage(cTable, req.body.message, username);
+    resp.status(200).json({message: "ok"}).end()
 });
 
 app.get("/cache/:channel", (req, resp) => {
     let channel = req.params.channel
-    let username = req.query.username
+    let username = req.headers.username
     if(!channel){
         resp.status(400).json({message: "Missing channel paramater"});
         return
     }
     let cTable = getChannel(channel);
-    cTable.users.find(u => u.name === username).lastRequest = Date.now()
-    resp.json({cTable: cTable, config: cliConfig}).end();
+	if(username){
+		cTable.users.find(u => u.name === username).lastRequest = Date.now()
+    }
+	resp.json({cTable: cTable, config: cliConfig}).end();
 })
 
 app.get("/channels", (req, resp) => {
