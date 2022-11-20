@@ -77,9 +77,6 @@ function loadMessagesFromCache(){
 		let alreadyAdded = false
 		for(x of Array.from(msgList.children)){
 			console.log(x.id, message.id)
-			if(message.from === "System"){
-				alreadyAdded = true
-			}
 			if(x.id == message.id){
 				alreadyAdded = true;
 			}
