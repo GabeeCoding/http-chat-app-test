@@ -5,6 +5,7 @@ const app = express();
 require("dotenv").config()
 
 const TIMEOUTDELAY = process.env.TIMEOUTDELAY || 10000
+const REMOVECHANNELDELAY = process.env.REMOVECHANNELDELAY || 21600
 const cliConfig = {
     CACHE_REQ_INTERVAL: process.env.CACHE_REQ_INTERVAL || "4500",
 }
@@ -15,6 +16,10 @@ app.use(express.static("public"));
 let channels = []
 let lastMsgId = 0;
 
+function now(){
+	return Math.round(Date.now() / 1000)
+}
+
 function getChannel(name){
     let channel = channels.find(c => c.name === name)
     if(!channel){
@@ -23,7 +28,8 @@ function getChannel(name){
             name: name,
             users: [],
             messages: [],
-        });
+			created: now(),
+		});
         return channels.find((c) => c.name === name);
     } else {
         return channel
@@ -108,9 +114,10 @@ app.post("/leave/:channel", (req,resp) => {
     
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
-        if(cTable.users.length === 0){
+        if(cTable.users.length === 0 && (now() - cTable.created) >= REMOVECHANNELDELAY){
             //if there are no users
-            let index = channels.indexOf(cTable)
+            console.log("Deleting channel", cTable.name)
+			let index = channels.indexOf(cTable)
             channels.splice(index, 1)
         }
     } else {
