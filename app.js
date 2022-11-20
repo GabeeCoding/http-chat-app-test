@@ -39,7 +39,7 @@ function getChannel(name){
 function sendMessage(channel, content, from){
     channel.messages.push({
         content: content,
-        timestamp: Date.now(),
+        timestamp: now(),
         id: lastMsgId + 1,
         from: from,
     })
@@ -75,7 +75,7 @@ app.post("/join/:channel", (req,resp) => {
     //check if any one is timed out and kick them first though
     //sometimes there may be afk users
     let sameUser = cTable.users.find(u => u.name === username)
-    if(sameUser && ((Date.now() - sameUser.lastRequest) >= TIMEOUTDELAY)){
+    if(sameUser && ((now() - sameUser.lastRequest) >= TIMEOUTDELAY)){
         //kick them
         cTable.users.splice(cTable.users.indexOf(sameUser), 1)
         //removed
@@ -88,7 +88,7 @@ app.post("/join/:channel", (req,resp) => {
     }
     cTable.users.push({
         name: username,
-        lastRequest: Date.now(),
+        lastRequest: now(),
     })
     sendMessage(cTable, `${username} joined the channel`, "System");
     console.log(`${username} has joined the ${channel} channel`);
@@ -114,12 +114,28 @@ app.post("/leave/:channel", (req,resp) => {
     
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
-        if(cTable.users.length === 0 && (now() - cTable.created) >= REMOVECHANNELDELAY){
+        if(cTable.users.length === 0){
             //if there are no users
-            console.log("Deleting channel", cTable.name)
-			let index = channels.indexOf(cTable)
-            channels.splice(index, 1)
-        }
+			//check for most recent message time
+			let mostRecentTimestamp = 0
+			if(cTable.messages.length !== 0){
+				cTable.messages.forEach(message => {
+					let ts = message.timestamp
+					if(ts >= mostRecentTimestamp){
+						mostRecentTimestamp = ts
+					}
+				})
+			}
+			console.log("no users")
+			console.log("most recent timestamp", mostRecentTimestamp)
+			if((now() - mostRecentTimestamp) >= REMOVECHANNELDELAY){
+				console.log("Deleting channel", cTable.name)
+				let index = channels.indexOf(cTable)
+				channels.splice(index, 1)
+			} else {
+				sendMessage(cTable, "Channel will be deleted in " + REMOVECHANNELDELAY + " seconds if this channel is inactive", "System")
+			}
+		}
     } else {
         resp.status(400).json({message: "Username does not exist"}).end()
         return
@@ -145,7 +161,7 @@ app.post("/sendMessage/:channel", (req,resp) => {
     //sending a message
     //add it to the cTable
     let cTable = getChannel(channel);
-	cTable.users.find(u => u.name === username).lastRequest = Date.now()
+	cTable.users.find(u => u.name === username).lastRequest = now()
 	sendMessage(cTable, req.body.message, username);
     resp.status(200).json({message: "ok"}).end()
 });
@@ -161,7 +177,7 @@ app.get("/cache/:channel", (req, resp) => {
 	if(username){
 		let user = cTable.users.find(u => u.name === username)
 		if(user){
-			user.lastRequest = Date.now()
+			user.lastRequest = now()
 		} else {
 			console.log("Cache endpoint: No user found")
 		}
