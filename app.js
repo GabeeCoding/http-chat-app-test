@@ -152,8 +152,13 @@ app.get("/cache/:channel", (req, resp) => {
     }
     let cTable = getChannel(channel);
 	if(username){
-		cTable.users.find(u => u.name === username).lastRequest = Date.now()
-    }
+		let user = cTable.users.find(u => u.name === username)
+		if(user){
+			user.lastRequest = Date.now()
+		} else {
+			console.log("Cache endpoint: No user found")
+		}
+	}
 	resp.json({cTable: cTable, config: cliConfig}).end();
 })
 
