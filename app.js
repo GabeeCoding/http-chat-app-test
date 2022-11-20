@@ -4,8 +4,8 @@ const app = express();
 
 require("dotenv").config()
 
-const TIMEOUTDELAY = process.env.TIMEOUTDELAY || 10000
-const REMOVECHANNELDELAY = process.env.REMOVECHANNELDELAY || 21600
+const TIMEOUTDELAY = (process.env.TIMEOUTDELAY && parseInt(process.env.TIMEOUTDELAY, 10)) || 10000
+const REMOVECHANNELDELAY = (process.env.REMOVECHANNELDELAY && parseInt(process.env.REMOVECHANNELDELAY, 10)) || 21600
 const cliConfig = {
     CACHE_REQ_INTERVAL: process.env.CACHE_REQ_INTERVAL || "4500",
 }
@@ -44,6 +44,41 @@ function sendMessage(channel, content, from){
         from: from,
     })
     lastMsgId += 1
+}
+
+function removeDeadChannels(){
+	channels.forEach(cTable => {
+		if(cTable.users.length === 0){
+			//if there are no users
+			//check for most recent message time
+			let mostRecentTimestamp = 0
+			let msg
+			if(cTable.messages.length !== 0){
+				cTable.messages.forEach(message => {
+					let ts = message.timestamp
+					if(ts >= mostRecentTimestamp){
+						mostRecentTimestamp = ts
+						msg = message
+					}
+				})
+			}
+			console.log("no users")
+			console.log("most recent timestamp", mostRecentTimestamp)
+			console.log(msg, cTable.messages)
+			let timeFromLastMessage = now() - mostRecentTimestamp	
+			console.log(timeFromLastMessage, REMOVECHANNELDELAY)
+			console.log(timeFromLastMessage + REMOVECHANNELDELAY)
+			if(timeFromLastMessage >= REMOVECHANNELDELAY){
+				console.log("Deleting channel", cTable.name)
+				let index = channels.indexOf(cTable)
+				channels.splice(index, 1)
+			} else {
+				if(msg && msg.from !== "System") {
+					sendMessage(cTable, "Channel will be deleted in " + (timeFromLastMessage + REMOVECHANNELDELAY) + " seconds if this channel is inactive", "System")
+				}
+			}
+		}
+	})
 }
 
 app.post("/join/:channel", (req,resp) => {
@@ -111,32 +146,10 @@ app.post("/leave/:channel", (req,resp) => {
     }
     let cTable = getChannel(channel);
     const index = cTable.users.indexOf(cTable.users.find((u) => u.name === username));
-    
+	removeDeadChannels()    
     if (index > -1) { // only splice array when item is found
         cTable.users.splice(index, 1); // 2nd parameter means remove one item only
-        if(cTable.users.length === 0){
-            //if there are no users
-			//check for most recent message time
-			let mostRecentTimestamp = 0
-			if(cTable.messages.length !== 0){
-				cTable.messages.forEach(message => {
-					let ts = message.timestamp
-					if(ts >= mostRecentTimestamp){
-						mostRecentTimestamp = ts
-					}
-				})
-			}
-			console.log("no users")
-			console.log("most recent timestamp", mostRecentTimestamp)
-			if((now() - mostRecentTimestamp) >= REMOVECHANNELDELAY){
-				console.log("Deleting channel", cTable.name)
-				let index = channels.indexOf(cTable)
-				channels.splice(index, 1)
-			} else {
-				sendMessage(cTable, "Channel will be deleted in " + REMOVECHANNELDELAY + " seconds if this channel is inactive", "System")
-			}
-		}
-    } else {
+	} else {
         resp.status(400).json({message: "Username does not exist"}).end()
         return
     }
@@ -182,6 +195,7 @@ app.get("/cache/:channel", (req, resp) => {
 			console.log("Cache endpoint: No user found")
 		}
 	}
+	removeDeadChannels()
 	resp.json({cTable: cTable, config: cliConfig}).end();
 })
 
