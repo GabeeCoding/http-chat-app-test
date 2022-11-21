@@ -153,7 +153,8 @@ app.post("/leave/:channel", (req,resp) => {
         resp.status(400).json({message: "Username does not exist"}).end()
         return
     }
-    resp.status(200).end()
+	sendMessage(cTable, `${username} left the channel`, "System")
+	resp.status(200).end()
 });
 
 app.post("/sendMessage/:channel", (req,resp) => {
