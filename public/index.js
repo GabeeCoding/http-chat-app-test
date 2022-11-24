@@ -86,7 +86,7 @@ function loadMessagesFromCache(){
 			//its a new element
 			//add element
 			console.log(message)
-			addMsgElement(message.from, message.content, message.timestamp, message.id)
+			addMsgElement(message.from, message.content, message.timestamp * 1000, message.id)
 		}
 	});
 	console.log("------------------------")
@@ -329,6 +329,9 @@ function disconnect(){
 		console.log(err)
 	})
 }
+
+sendSystemMessage("Warning: Web Chat is not secure")
+sendSystemMessage("Make sure that you do not send personal information, you have been warned")
 
 let cliConfig = {
 	CACHE_REQ_INTERVAL: "2500"
