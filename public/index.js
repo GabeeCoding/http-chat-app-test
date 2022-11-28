@@ -14,7 +14,7 @@ if(origin.endsWith("/")){
 	origin = origin.slice(0, -1)
 }
 
-const allowedElements = ["B", "I", "IMG", "STRONG", "EM", "P", "A", "VIDEO", "AUDIO", "SOURCE"]
+const allowedElements = ["B", "I", "U", "IMG", "STRONG", "EM", "P", "A", "VIDEO", "AUDIO", "SOURCE"]
 
 let reqCount = 0
 
