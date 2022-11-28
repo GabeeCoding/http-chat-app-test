@@ -337,11 +337,17 @@ let cliConfig = {
 	CACHE_REQ_INTERVAL: "2500"
 };
 
+let unfocused = false;
+
 (function loop() {
 	setTimeout(() => {
 	   // Your logic here
 	   if(connected){
 		if(document.hasFocus()){
+			if(unfocused){
+				unfocused = false
+				setConnectionStatus("refocused, sending cache request...")
+			}
 			let endpoint = `${origin}/cache/${channelCached}?username=${usernameCached}`
 			let now = new Date();
 			fetch(endpoint, {
@@ -390,6 +396,7 @@ let cliConfig = {
 				console.log(err)
 			})
 		} else {
+			unfocused = true
 			setConnectionStatus("connected, focus lost");
 		}
 	}
