@@ -332,6 +332,7 @@ function disconnect(){
 
 sendSystemMessage("Warning: Web Chat is not secure")
 sendSystemMessage("Make sure that you do not send personal information, you have been warned")
+sendSystemMessage("Type /cmds for commands list")
 
 let cliConfig = {
 	CACHE_REQ_INTERVAL: "2500"
